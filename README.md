@@ -1,126 +1,126 @@
 # Echoes Engine — Front-end
 
-A personal **memory observatory** for digital activity. This app connects to the Echoes Engine NestJS API and helps you answer:
+Um **observatório de memória** pessoal para atividade digital. Este app se conecta à API NestJS do Echoes Engine e ajuda você a responder:
 
-> *What has my digital life been doing lately?*
+> *O que minha vida digital tem feito ultimamente?*
 
-Captured browser visits resolve into timelines, domains, categories, sources, and hourly rhythms — visualized through a dark-violet instrument panel with the **signal ribbon** as its signature element.
+Visitas capturadas no navegador se transformam em linhas do tempo, domínios, categorias, fontes e ritmos por hora — visualizados em um painel instrumento violeta-escuro com a **fita de sinal** como elemento assinatura.
 
 ## Stack
 
 - **React 18** + **TypeScript** + **Vite**
-- **React Router** — public and authenticated routing
-- **TanStack Query** — server state for dashboard and users
-- **React Hook Form** + **Zod** — form validation
-- **Tailwind CSS** — styling (tokens defined in `src/styles/tokens.css`, mapped in `tailwind.config.js`)
-- **Vitest** + **Testing Library** — unit tests
+- **React Router** — rotas públicas e autenticadas
+- **TanStack Query** — estado do servidor para dashboard e usuários
+- **React Hook Form** + **Zod** — validação de formulários
+- **Tailwind CSS** — estilização (tokens definidos em `src/styles/tokens.css`, mapeados em `tailwind.config.js`)
+- **Vitest** + **Testing Library** — testes unitários
 
-## Prerequisites
+## Pré-requisitos
 
 - Node.js 18+
-- Echoes Engine API running locally (default `http://localhost:3000`)
+- API Echoes Engine rodando localmente (padrão `http://localhost:3000`)
 
-## Setup
+## Configuração
 
 ```bash
-# 1. Install dependencies
+# 1. Instalar dependências
 npm install
 
-# If npm install hangs on your network (IPv6/DNS issue), force IPv4:
+# Se o npm install travar na sua rede (problema de IPv6/DNS), force IPv4:
 NODE_OPTIONS="--dns-result-order=ipv4first" npm install
 
-# 2. Configure the API URL
+# 2. Configurar a URL da API
 cp .env.example .env
 
-# 3. Start the dev server
+# 3. Iniciar o servidor de desenvolvimento
 npm run dev
 ```
 
-The app runs at **http://localhost:5173**.
+O app roda em **http://localhost:5173**.
 
-### Environment variables
+### Variáveis de ambiente
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `VITE_API_BASE_URL` | `/api/v1` | Base URL for all API calls. Defaults to the Vite dev proxy so the `access_token` cookie stays same-site. |
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `VITE_API_BASE_URL` | `/api/v1` | URL base para todas as chamadas à API. Por padrão usa o proxy do Vite em dev para que o cookie `access_token` permaneça same-site. |
 
-## Authentication
+## Autenticação
 
-Sign-in uses an **`access_token` HttpOnly cookie** set by the API on `POST /auth/login`. The front-end does **not** store the JWT in `localStorage`.
+O login usa um cookie HttpOnly **`access_token`** definido pela API em `POST /auth/login`. O front-end **não** armazena o JWT em `localStorage`.
 
-- All API calls send `credentials: "include"` so the browser attaches the cookie.
-- On startup, `GET /users/me` bootstraps the in-memory session.
-- `POST /auth/logout` clears the cookie; sign out always calls this endpoint.
-- Session state lives in `authStore` (authenticated / anonymous / pending only).
+- Todas as chamadas à API enviam `credentials: "include"` para que o navegador anexe o cookie.
+- Na inicialização, `GET /users/me` carrega a sessão em memória.
+- `POST /auth/logout` limpa o cookie; o logout sempre chama este endpoint.
+- O estado da sessão fica em `authStore` (apenas autenticado / anônimo / pendente).
 
-For local dev, Vite proxies `/api` → `http://localhost:3000`. If you point `VITE_API_BASE_URL` at the API host directly, the back-end must allow credentialed CORS from `http://localhost:5173`.
+Para desenvolvimento local, o Vite faz proxy de `/api` → `http://localhost:3000`. Se você apontar `VITE_API_BASE_URL` diretamente para o host da API, o back-end precisa permitir CORS com credenciais a partir de `http://localhost:5173`.
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start Vite dev server |
-| `npm run build` | Typecheck + production build |
-| `npm run preview` | Preview production build |
-| `npm run typecheck` | TypeScript check |
-| `npm test` | Run unit tests |
-| `npm run test:watch` | Run tests in watch mode |
+| Comando | Descrição |
+|---------|-----------|
+| `npm run dev` | Inicia o servidor de desenvolvimento Vite |
+| `npm run build` | Typecheck + build de produção |
+| `npm run preview` | Visualiza o build de produção |
+| `npm run typecheck` | Verificação TypeScript |
+| `npm test` | Executa testes unitários |
+| `npm run test:watch` | Executa testes em modo watch |
 
-## Routes
+## Rotas
 
-| Path | Access | Description |
-|------|--------|-------------|
-| `/` | Public | Landing page |
-| `/login` | Public | Sign in |
-| `/register` | Public | Create account |
-| `/app/dashboard` | Auth | Main analytics dashboard |
-| `/app/activity` | Auth | Hourly rhythm + domains |
-| `/app/events/test` | Auth | Send test WEB_VISIT event |
-| `/app/profile` | Auth | Edit your account |
-| `/app/users` | Auth | Internal user list |
-| `/app/users/:id` | Auth | User detail + edit |
+| Caminho | Acesso | Descrição |
+|---------|--------|-----------|
+| `/` | Público | Página inicial |
+| `/login` | Público | Entrar |
+| `/register` | Público | Criar conta |
+| `/app/dashboard` | Autenticado | Dashboard principal de analytics |
+| `/app/activity` | Autenticado | Ritmo por hora + domínios |
+| `/app/events/test` | Autenticado | Enviar evento de teste WEB_VISIT |
+| `/app/profile` | Autenticado | Editar sua conta |
+| `/app/users` | Autenticado | Lista interna de usuários |
+| `/app/users/:id` | Autenticado | Detalhe e edição de usuário |
 
-Unauthenticated visits to `/app/*` redirect to `/login`. Signed-in users visiting `/login` or `/register` redirect to `/app/dashboard`.
+Visitas não autenticadas a `/app/*` redirecionam para `/login`. Usuários logados que acessam `/login` ou `/register` são redirecionados para `/app/dashboard`.
 
-## Profile / current user
+## Perfil / usuário atual
 
-The profile screen loads the signed-in user from **`GET /users/me`**. The user id comes from the API (derived from the JWT server-side), not from client-side token decoding.
+A tela de perfil carrega o usuário logado via **`GET /users/me`**. O id do usuário vem da API (derivado do JWT no servidor), não de decodificação de token no cliente.
 
 ## Design
 
-The UI is built as a **memory observatory** — not a generic admin dashboard.
+A interface é construída como um **observatório de memória** — não um dashboard administrativo genérico.
 
-- **Palette:** midnight ink, deep violet, memory blue, signal cyan, soft lilac, trace amber (`src/styles/tokens.css`)
-- **Type:** Space Grotesk (display), Inter (body), IBM Plex Mono (data)
-- **Signature:** the **signal ribbon** — a horizontal temporal band where daily activity becomes pulses, gaps, and density changes
+- **Paleta:** midnight ink, deep violet, memory blue, signal cyan, soft lilac, trace amber (`src/styles/tokens.css`)
+- **Tipografia:** Space Grotesk (display), Inter (corpo), IBM Plex Mono (dados)
+- **Assinatura:** a **fita de sinal** — uma faixa temporal horizontal onde a atividade diária vira pulsos, lacunas e mudanças de densidade
 
-See `docs/setup.md` for the full product and API contract.
+Consulte `docs/setup.md` para o contrato completo de produto e API.
 
-## Project structure
+## Estrutura do projeto
 
 ```
 src/
   app/           Router, shell, providers
-  shared/        HTTP client, auth store, UI primitives
+  shared/        Cliente HTTP, auth store, primitivos de UI
   features/
-    auth/        Login, register
-    dashboard/   Analytics pages and charts
-    events/      Test event ingestion
-    users/       Profile and user management
-    landing/     Public landing + 404
-  styles/        Design tokens + Tailwind globals
+    auth/        Login, registro
+    dashboard/   Páginas e gráficos de analytics
+    events/      Ingestão de eventos de teste
+    users/       Perfil e gestão de usuários
+    landing/     Landing pública + 404
+  styles/        Design tokens + globals Tailwind
 ```
 
-## Testing
+## Testes
 
 ```bash
 npm test
 ```
 
-Tests cover cookie session bootstrap, credentialed fetch behavior, route guards, form validation, dashboard loading/error/empty/success states, period changes, test-event submission with dashboard invalidation, and profile diff validation.
+Os testes cobrem bootstrap de sessão por cookie, comportamento de fetch com credenciais, guards de rota, validação de formulários, estados de carregamento/erro/vazio/sucesso do dashboard, mudanças de período, envio de evento de teste com invalidação do dashboard e validação de diff do perfil.
 
-## What is (and isn't) built
+## O que está (e não está) implementado
 
-**Live today:** browser visit events, period analytics (7–90 days), dashboard charts, test ingestion, auth, profile/user management.
+**Disponível hoje:** eventos de visita no navegador, analytics por período (7–90 dias), gráficos do dashboard, ingestão de teste, autenticação, gestão de perfil/usuários.
 
-**Roadmap only** (labeled as such on the landing page, no active UI): semantic search, embeddings, knowledge graph, behavioral insights.
+**Apenas no roadmap** (rotulado assim na landing page, sem UI ativa): busca semântica, embeddings, grafo de conhecimento, insights comportamentais.
