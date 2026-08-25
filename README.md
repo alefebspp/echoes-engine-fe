@@ -43,7 +43,6 @@ O app roda em **http://localhost:5173**.
 | Variável | Padrão | Descrição |
 |----------|--------|-----------|
 | `VITE_API_BASE_URL` | `/api/v1` | URL base para todas as chamadas à API. Use o path relativo para que o cookie `access_token` permaneça same-site. |
-| `API_ORIGIN` | — | Só na Vercel. Host do Nest (ex.: `https://echoes-engine.onrender.com`), sem `/api/v1`. |
 
 ## Autenticação
 
@@ -54,14 +53,14 @@ O login usa um cookie HttpOnly **`access_token`** definido pela API em `POST /au
 - `POST /auth/logout` limpa o cookie; o logout sempre chama este endpoint.
 - O estado da sessão fica em `authStore` (apenas autenticado / anônimo / pendente).
 
-Para desenvolvimento local, o Vite faz proxy de `/api` → `http://localhost:3000`. Em produção na Vercel, a função Edge em `api/[...path].ts` faz proxy de `/api` para o host em `API_ORIGIN`, mantendo o cookie `access_token` same-site.
+Para desenvolvimento local, o Vite faz proxy de `/api` → `http://localhost:3000`. Em produção na Vercel, `vercel.json` reescreve `/api/:path*` para o host da API (hoje `https://echoes-engine.onrender.com`) e faz fallback SPA para `index.html`. Assim o cookie permanece same-site.
 
-| Ambiente | Variável | Valor |
-|----------|----------|-------|
-| Local e Vercel | `VITE_API_BASE_URL` | `/api/v1` |
-| Só Vercel | `API_ORIGIN` | `https://echoes-engine.onrender.com` (sem sufixo `/api/v1`) |
+| Ambiente | Configuração |
+|----------|--------------|
+| Local e Vercel | `VITE_API_BASE_URL=/api/v1` |
+| Vercel (host da API) | `rewrites[0].destination` em `vercel.json` |
 
-Se a API mudar de host, atualize só `API_ORIGIN` no painel da Vercel e faça redeploy — não é preciso alterar código. Não aponte `VITE_API_BASE_URL` direto para o host da API, senão o cookie deixa de funcionar no navegador.
+Se a API mudar de host, atualize o `destination` do rewrite `/api` em `vercel.json` e faça redeploy. Não aponte `VITE_API_BASE_URL` direto para o host da API, senão o cookie deixa de funcionar no navegador.
 ## Scripts
 
 | Comando | Descrição |
