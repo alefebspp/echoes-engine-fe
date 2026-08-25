@@ -6,6 +6,10 @@ Um **observatório de memória** pessoal para atividade digital. Este app se con
 
 Visitas capturadas no navegador se transformam em linhas do tempo, domínios, categorias, fontes e ritmos por hora — visualizados em um painel instrumento violeta-escuro com a **fita de sinal** como elemento assinatura.
 
+## URL
+
+https://echoes-engine-fe.vercel.app/
+
 ## Stack
 
 - **React 18** + **TypeScript** + **Vite**
