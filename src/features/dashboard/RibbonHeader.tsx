@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card } from "@/shared/components/Card";
 import { SignalRibbon } from "@/shared/components/SignalRibbon";
 import { DashboardPeriodSelect } from "./DashboardPeriodSelect";
@@ -19,21 +20,22 @@ export function RibbonHeader({
   isFetching = false,
   animate = true,
 }: Props) {
+  const { t } = useTranslation();
   const data = stats?.eventsByDay ?? [];
 
   return (
     <Card className="overflow-hidden">
       <div className="flex flex-wrap items-start justify-between gap-4 px-[1.35rem] pb-2 pt-[1.15rem]">
         <div className="flex flex-col gap-1">
-          <span className="eyebrow">Selected period overview</span>
+          <span className="eyebrow">{t("dashboard.ribbon.eyebrow")}</span>
           <p className="font-display text-h3 font-semibold text-ink_text-bright">
-            Recent memory trace
+            {t("dashboard.ribbon.title")}
           </p>
         </div>
         <div className="flex items-center gap-3">
           {isFetching && (
             <span className="font-mono text-micro uppercase tracking-[0.12em] text-ink_text-faint">
-              updating…
+              {t("dashboard.ribbon.updating")}
             </span>
           )}
           <DashboardPeriodSelect value={period} onChange={onPeriodChange} />
@@ -45,7 +47,7 @@ export function RibbonHeader({
           data={data}
           animate={animate}
           height={104}
-          caption={`Captured activity across the last ${period} days`}
+          caption={t("dashboard.ribbon.caption", { days: period })}
         />
       </div>
 
@@ -53,11 +55,11 @@ export function RibbonHeader({
         <span className="font-mono text-micro text-ink_text-faint">
           {data.length > 0
             ? `${data[0]?.date} → ${data[data.length - 1]?.date}`
-            : "awaiting captured events"}
+            : t("dashboard.ribbon.awaiting")}
         </span>
         {stats && (
           <span className="font-mono text-micro text-ink_text-faint">
-            timezone · {stats.timezone}
+            {t("dashboard.ribbon.timezone", { timezone: stats.timezone })}
           </span>
         )}
       </div>

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Wordmark } from "@/shared/components/Wordmark";
 import { ApiStatus } from "@/shared/components/ApiStatus";
+import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { useAuth } from "@/shared/auth/useAuth";
 import { navItems } from "./navItems";
 
@@ -15,8 +17,9 @@ function navLinkClasses(isActive: boolean): string {
 }
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
+  const { t } = useTranslation();
   return (
-    <nav className="flex flex-col gap-1" aria-label="Primary">
+    <nav className="flex flex-col gap-1" aria-label={t("shell.primaryNav")}>
       {navItems.map((item) => (
         <NavLink
           key={item.to}
@@ -34,9 +37,9 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
                 {item.icon}
               </span>
               <span className="flex flex-col">
-                <span className="text-sm font-medium leading-tight">{item.label}</span>
+                <span className="text-sm font-medium leading-tight">{t(`nav.${item.key}.label`)}</span>
                 <span className="text-micro leading-tight text-ink_text-faint">
-                  {item.description}
+                  {t(`nav.${item.key}.description`)}
                 </span>
               </span>
             </>
@@ -48,6 +51,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 function SignOutButton({ onSignOut }: { onSignOut: () => void }) {
+  const { t } = useTranslation();
   return (
     <button
       type="button"
@@ -59,12 +63,13 @@ function SignOutButton({ onSignOut }: { onSignOut: () => void }) {
         <path d="M11 12l3-3-3-3" />
         <path d="M14 9H7" />
       </svg>
-      Sign out
+      {t("shell.signOut")}
     </button>
   );
 }
 
 export function AppShell() {
+  const { t } = useTranslation();
   const { signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,7 +102,7 @@ export function AppShell() {
             <button
               type="button"
               className="lg:hidden"
-              aria-label="Toggle navigation"
+              aria-label={t("shell.toggleNav")}
               aria-expanded={mobileOpen}
               onClick={() => setMobileOpen((open) => !open)}
             >
@@ -109,7 +114,10 @@ export function AppShell() {
               <Wordmark markOnly />
             </span>
           </div>
-          <ApiStatus />
+          <div className="flex items-center gap-4">
+            <ApiStatus />
+            <LanguageSwitcher />
+          </div>
         </header>
 
         {/* Mobile nav panel */}
@@ -123,7 +131,7 @@ export function AppShell() {
         )}
 
         <main
-          key={location.pathname.startsWith("/app/users/") ? "user-detail" : location.pathname}
+          key={location.pathname}
           className="flex-1 animate-fade-up px-5 py-6 lg:px-8 lg:py-8"
         >
           <Outlet />

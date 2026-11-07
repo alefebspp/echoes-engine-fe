@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/shared/components/PageHeader";
 import { Card, CardBody } from "@/shared/components/Card";
 import { LoadingBlock, ErrorBlock } from "@/shared/components/Feedback";
@@ -9,29 +10,30 @@ import { CategoryBreakdown } from "./CategoryBreakdown";
 import { usePeriodParam, useDashboardQuery } from "./useDashboard";
 
 export function ActivityPage() {
+  const { t } = useTranslation();
   const [period, setPeriod] = usePeriodParam();
   const query = useDashboardQuery(period);
 
   return (
     <>
       <PageHeader
-        eyebrow="Activity"
-        title="Where attention collected"
-        description="The shape of your day by the hour, and the places it pointed to."
+        eyebrow={t("activity.eyebrow")}
+        title={t("activity.title")}
+        description={t("activity.description")}
         actions={<DashboardPeriodSelect value={period} onChange={setPeriod} />}
       />
 
       {query.isLoading ? (
         <Card>
           <CardBody>
-            <LoadingBlock label="Reading recent signals…" />
+            <LoadingBlock label={t("dashboard.loading")} />
           </CardBody>
         </Card>
       ) : query.isError ? (
         <Card>
           <CardBody>
             <ErrorBlock
-              title="Couldn't load activity"
+              title={t("activity.loadError")}
               message={toUserMessage(query.error)}
               onRetry={() => query.refetch()}
             />

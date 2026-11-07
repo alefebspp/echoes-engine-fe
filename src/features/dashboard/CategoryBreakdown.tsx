@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardHeader, CardBody } from "@/shared/components/Card";
 import { EmptyState } from "@/shared/components/EmptyState";
 import { BarMeter } from "./BarMeter";
@@ -8,14 +9,19 @@ interface Props {
 }
 
 export function CategoryBreakdown({ data }: Props) {
+  const { t } = useTranslation();
   return (
     <Card>
-      <CardHeader as="h2" title="Categories" subtitle="Where attention concentrated" />
+      <CardHeader
+        as="h2"
+        title={t("dashboard.categories.title")}
+        subtitle={t("dashboard.categories.subtitle")}
+      />
       <CardBody>
         {data.length === 0 ? (
           <EmptyState
-            title="No categories yet"
-            description="Captured events are tagged and grouped here as they accumulate."
+            title={t("dashboard.categories.emptyTitle")}
+            description={t("dashboard.categories.emptyBody")}
           />
         ) : (
           <BarMeter

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent, KeyboardEvent, RefObject } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/shared/components/Button";
 import { FieldError } from "@/shared/components/FieldError";
 import { FormBanner } from "@/shared/components/FormBanner";
@@ -7,6 +8,7 @@ import { Input } from "@/shared/components/Input";
 import { rateLimitMessage } from "./askErrors";
 import { ScopeChips } from "./ScopeChips";
 import { QUESTION_MAX, TAG_MAX, scopeChips, scopeWithout } from "./scope";
+import { formatNumber } from "@/shared/utils/formatNumber";
 import type { AskScope, Notice } from "./types";
 
 const fieldLabel =
@@ -42,6 +44,7 @@ export function AskComposer({
   onSubmit,
   onRateLimitDone,
 }: AskComposerProps) {
+  const { t } = useTranslation();
   const [draftTag, setDraftTag] = useState("");
   const [tagNote, setTagNote] = useState<string | undefined>();
   const fieldError = notice?.kind === "field" ? notice.message : undefined;
@@ -80,14 +83,14 @@ export function AskComposer({
 
     onScopeChange({ ...scope, tags: next });
     setDraftTag("");
-    setTagNote(hitLimit ? "Use at most 20 tags." : undefined);
+    setTagNote(hitLimit ? t("ask.validation.tagLimit") : undefined);
   }
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate aria-busy={pending || undefined}>
       <div className="flex flex-col gap-1.5">
         <label className={fieldLabel} htmlFor="ask-question">
-          Question
+          {t("ask.question")}
         </label>
         <textarea
           id="ask-question"
@@ -95,7 +98,7 @@ export function AskComposer({
           value={question}
           onChange={(event) => onQuestionChange(event.target.value)}
           onKeyDown={handleQuestionKeyDown}
-          placeholder="Ask what you read, watched, or opened."
+          placeholder={t("ask.placeholder")}
           maxLength={QUESTION_MAX}
           rows={3}
           disabled={pending}
@@ -106,7 +109,7 @@ export function AskComposer({
           className={`${questionField} ${fieldError ? "border-danger focus:border-danger focus:shadow-[0_0_0_3px_var(--danger-soft)]" : "border-hairline-strong"}`}
         />
         <p id="ask-question-hint" className="sr-only">
-          Up to 2,000 characters.
+          {t("ask.questionHint")}
         </p>
         {fieldError && <FieldError id="ask-question-error" message={fieldError} />}
       </div>
@@ -117,13 +120,13 @@ export function AskComposer({
       )}
       {notice?.kind === "ready" && (
         <p aria-live="polite" className="font-mono text-sm text-signal">
-          You can ask again.
+          {t("ask.ready")}
         </p>
       )}
 
       <ScopeChips
         chips={scopeChips(scope)}
-        label="Filters on the next question"
+        label={t("ask.filtersNext")}
         disabled={pending}
         onRemove={(chip) => {
           onScopeChange(scopeWithout(scope, chip));
@@ -133,11 +136,11 @@ export function AskComposer({
 
       {scopeOpen && (
         <fieldset id="ask-scope" disabled={pending} className="flex flex-col gap-4 border-t border-hairline pt-4">
-          <legend className={fieldLabel}>Only pages from</legend>
+          <legend className={fieldLabel}>{t("ask.onlyFrom")}</legend>
           <div className="grid gap-3 sm:grid-cols-2">
             <Input
               id="ask-from"
-              label="Start"
+              label={t("ask.start")}
               type="date"
               value={scope.from}
               onChange={(event) => onScopeChange({ ...scope, from: event.target.value })}
@@ -146,7 +149,7 @@ export function AskComposer({
             />
             <Input
               id="ask-to"
-              label="End"
+              label={t("ask.end")}
               type="date"
               value={scope.to}
               onChange={(event) => onScopeChange({ ...scope, to: event.target.value })}
@@ -156,12 +159,12 @@ export function AskComposer({
           </div>
           <Input
             id="ask-tag"
-            label="Must include a tag"
-            placeholder="developer tools"
+            label={t("ask.tag")}
+            placeholder={t("ask.tagPlaceholder")}
             hint={
               scope.tags.length >= TAG_MAX
-                ? "Use at most 20 tags."
-                : "A page needs at least one of these."
+                ? t("ask.validation.tagLimit")
+                : t("ask.tagHint")
             }
             error={tagNote}
             value={draftTag}
@@ -185,7 +188,7 @@ export function AskComposer({
             disabled={draftTag.trim().length === 0 || scope.tags.length >= TAG_MAX}
             onClick={addTags}
           >
-            Add tag
+            {t("ask.addTag")}
           </Button>
         </fieldset>
       )}
@@ -199,16 +202,16 @@ export function AskComposer({
           disabled={pending}
           onClick={() => onScopeOpen(!scopeOpen)}
         >
-          Narrow the search
+          {t("ask.narrow")}
         </Button>
         <div className="flex items-center gap-3">
           {trimmedLength >= 1600 && (
             <span className="font-mono text-micro text-ink_text-faint" aria-hidden="true">
-              {trimmedLength} / 2,000
+              {formatNumber(trimmedLength)} / {formatNumber(QUESTION_MAX)}
             </span>
           )}
           <Button type="submit" disabled={pending || rateLimited}>
-            Ask
+            {t("ask.submit")}
           </Button>
         </div>
       </div>
@@ -223,7 +226,7 @@ export function AskComposer({
               className="size-1.5 shrink-0 animate-pulse rounded-full bg-signal"
               aria-hidden="true"
             />
-            Looking through your history.
+            {t("ask.pending")}
           </>
         )}
       </p>

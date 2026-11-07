@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { httpClient } from "@/shared/api/httpClient";
 
 async function fetchHealth(): Promise<boolean> {
@@ -7,19 +8,20 @@ async function fetchHealth(): Promise<boolean> {
 }
 
 const STATES = {
-  checking: { dot: "bg-ink_text-faint", label: "Checking API" },
+  checking: { dot: "bg-ink_text-faint", label: "apiStatus.checking" },
   online: {
     dot: "bg-signal shadow-[0_0_10px_var(--signal-cyan)]",
-    label: "API online",
+    label: "apiStatus.online",
   },
   offline: {
     dot: "bg-danger shadow-[0_0_10px_var(--danger)]",
-    label: "API offline",
+    label: "apiStatus.offline",
   },
 } as const;
 
 /** Small ambient indicator for the API connection — quiet, not alarming. */
 export function ApiStatus({ className }: { className?: string }) {
+  const { t } = useTranslation();
   const { isLoading, isError } = useQuery({
     queryKey: ["health"],
     queryFn: fetchHealth,
@@ -36,7 +38,7 @@ export function ApiStatus({ className }: { className?: string }) {
       role="status"
     >
       <span className={`size-2 rounded-full ${state.dot}`} aria-hidden="true" />
-      {state.label}
+      {t(state.label)}
     </span>
   );
 }

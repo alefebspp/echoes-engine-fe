@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/shared/components/PageHeader";
 import { Card, CardBody } from "@/shared/components/Card";
 import { LoadingBlock, ErrorBlock } from "@/shared/components/Feedback";
@@ -11,15 +12,16 @@ import { SourcesPanel } from "./SourcesPanel";
 import { usePeriodParam, useDashboardQuery } from "./useDashboard";
 
 export function DashboardPage() {
+  const { t } = useTranslation();
   const [period, setPeriod] = usePeriodParam();
   const query = useDashboardQuery(period);
 
   return (
     <>
       <PageHeader
-        eyebrow="Dashboard"
-        title="Your digital day, resolved into signals"
-        description="A quiet instrument panel for what your browsing has been doing lately."
+        eyebrow={t("dashboard.eyebrow")}
+        title={t("dashboard.title")}
+        description={t("dashboard.description")}
       />
 
       <div className="flex flex-col gap-4">
@@ -33,14 +35,14 @@ export function DashboardPage() {
         {query.isLoading ? (
           <Card>
             <CardBody>
-              <LoadingBlock label="Reading recent signals…" />
+              <LoadingBlock label={t("dashboard.loading")} />
             </CardBody>
           </Card>
         ) : query.isError ? (
           <Card>
             <CardBody>
               <ErrorBlock
-                title="Couldn't load the dashboard"
+                title={t("dashboard.loadError")}
                 message={toUserMessage(query.error)}
                 onRetry={() => query.refetch()}
               />

@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
+import { useTranslation } from "react-i18next";
 import { FieldError } from "./FieldError";
 
 const labelClasses =
@@ -23,6 +24,7 @@ interface FieldShellProps {
 }
 
 function FieldShell({ id, label, optional, hint, error, children }: FieldShellProps) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-1.5">
       <label className={labelClasses} htmlFor={id}>
@@ -30,7 +32,7 @@ function FieldShell({ id, label, optional, hint, error, children }: FieldShellPr
         {optional && (
           <span className="text-ink_text-faint normal-case tracking-normal">
             {" "}
-            · optional
+            · {t("common.optional")}
           </span>
         )}
       </label>

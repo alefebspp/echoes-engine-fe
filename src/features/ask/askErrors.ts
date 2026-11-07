@@ -1,41 +1,46 @@
-import { ApiError, extractApiMessage } from "@/shared/api/apiErrors";
+import { ApiError } from "@/shared/api/apiErrors";
+import type { ValidationDetail } from "@/shared/api/apiErrors";
+import { i18n } from "@/shared/i18n";
 import type { Notice } from "./types";
 
 export const RATE_LIMIT_MS = 60_000;
 
-export function fieldMessageFromApi(message: string): string {
-  const lower = message.toLowerCase();
-  if (lower.includes("2000")) return "Keep the question under 2,000 characters.";
-  if (
-    lower.includes("question") &&
-    (lower.includes("3") || lower.includes("short") || lower.includes("few"))
-  ) {
-    return "Ask at least a few words.";
+/** Turns the first rejected field of a `VALIDATION_FAILED` response into a message. */
+export function fieldMessageFromDetails(details: ValidationDetail[]): string {
+  const first = details[0];
+  if (first?.field === "question") {
+    return first.rules.includes("maxLength")
+      ? i18n.t("ask.validation.questionLong")
+      : i18n.t("ask.validation.questionShort");
   }
-  if (lower === "bad request") return "Check the question and the filters, then ask again.";
-  return message;
+  if (first?.field === "from") return i18n.t("ask.validation.startDate");
+  if (first?.field === "to") return i18n.t("ask.validation.endDate");
+  if (first?.field.startsWith("tags") && first.rules.includes("arrayMaxSize")) {
+    return i18n.t("ask.validation.tagLimit");
+  }
+  return i18n.t("ask.validation.badRequest");
 }
 
 export function noticeFromError(error: unknown, now = Date.now()): Notice | null {
   if (error instanceof ApiError) {
     if (error.status === 401) return null;
-    if (error.status === 429) return { kind: "rate", until: now + RATE_LIMIT_MS };
+    if (error.code === "RATE_LIMITED" || error.status === 429) return { kind: "rate", until: now + RATE_LIMIT_MS };
     if (error.isValidation) {
       return {
         kind: "field",
-        message: fieldMessageFromApi(extractApiMessage(error.body, error.message)),
+        message: fieldMessageFromDetails(error.details),
       };
     }
     if (error.isNetwork) {
-      return { kind: "server", message: "Can't reach the API. Your question is still here." };
+      return { kind: "server", message: i18n.t("ask.errors.unreachable") };
     }
   }
-  return { kind: "server", message: "The search didn't finish. Your question is still here." };
+  return { kind: "server", message: i18n.t("ask.errors.unfinished") };
 }
 
 export function rateLimitMessage(seconds: number): string {
   const remaining = Math.max(0, Math.ceil(seconds));
   const wait =
-    remaining >= 60 ? "1 minute" : remaining === 1 ? "1 second" : `${remaining} seconds`;
-  return `You've used the 10 questions for this minute. Try again in ${wait}.`;
+    remaining >= 60 ? i18n.t("ask.rate.minute") : i18n.t("ask.rate.seconds", { count: remaining });
+  return i18n.t("ask.rate.message", { wait });
 }

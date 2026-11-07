@@ -1,17 +1,29 @@
-const COMPACT = new Intl.NumberFormat(undefined, {
-  notation: "compact",
-  maximumFractionDigits: 1,
-});
+import { currentLanguage, i18n } from "@/shared/i18n";
 
-const PLAIN = new Intl.NumberFormat(undefined);
+const cache = new Map<string, Intl.NumberFormat>();
+
+/** Number formatters follow the active interface language, built once per locale. */
+function formatter(compact: boolean): Intl.NumberFormat {
+  const locale = currentLanguage();
+  const key = `${locale}:${compact}`;
+  let format = cache.get(key);
+  if (!format) {
+    format = new Intl.NumberFormat(
+      locale,
+      compact ? { notation: "compact", maximumFractionDigits: 1 } : undefined,
+    );
+    cache.set(key, format);
+  }
+  return format;
+}
 
 export function formatNumber(value: number): string {
-  return PLAIN.format(value);
+  return formatter(false).format(value);
 }
 
 /** 1240 → "1.2K". Used in tight chart labels and stat cards. */
 export function formatCompact(value: number): string {
-  return COMPACT.format(value);
+  return formatter(true).format(value);
 }
 
 export function formatPercent(value: number, fractionDigits = 0): string {
@@ -24,7 +36,7 @@ export function formatPercent(value: number, fractionDigits = 0): string {
  */
 export function formatSummaryValue(value: unknown): string {
   if (typeof value === "number") return formatNumber(value);
-  if (typeof value === "boolean") return value ? "Yes" : "No";
+  if (typeof value === "boolean") return value ? i18n.t("common.yes") : i18n.t("common.no");
   if (typeof value === "string") return value;
   if (value === null || value === undefined) return "—";
   return String(value);

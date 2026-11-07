@@ -85,10 +85,7 @@ Se a API mudar de host, atualize o `destination` do rewrite `/api` em `vercel.js
 | `/register` | Público | Criar conta |
 | `/app/dashboard` | Autenticado | Dashboard principal de analytics |
 | `/app/activity` | Autenticado | Ritmo por hora + domínios |
-| `/app/events/test` | Autenticado | Enviar evento de teste WEB_VISIT |
 | `/app/profile` | Autenticado | Editar sua conta |
-| `/app/users` | Autenticado | Lista interna de usuários |
-| `/app/users/:id` | Autenticado | Detalhe e edição de usuário |
 
 Visitas não autenticadas a `/app/*` redirecionam para `/login`. Usuários logados que acessam `/login` ou `/register` são redirecionados para `/app/dashboard`.
 

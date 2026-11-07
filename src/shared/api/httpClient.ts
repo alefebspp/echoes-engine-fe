@@ -1,4 +1,5 @@
 import { env } from "@/shared/config/env";
+import { i18n } from "@/shared/i18n";
 import { ApiError, extractApiMessage } from "./apiErrors";
 
 type Json = Record<string, unknown> | unknown[] | undefined;
@@ -57,19 +58,19 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     });
   } catch (cause) {
     if (cause instanceof DOMException && cause.name === "AbortError") throw cause;
-    throw new ApiError("Network request failed", 0, cause);
+    throw new ApiError(i18n.t("api.networkFailed"), 0, cause);
   }
 
   if (response.status === 401 && !anonymous) {
     onUnauthorized?.();
-    throw new ApiError("Your session expired. Sign in again.", 401, null);
+    throw new ApiError(i18n.t("api.sessionExpired"), 401, null);
   }
 
   const payload = await parseBody(response);
 
   if (!response.ok) {
     throw new ApiError(
-      extractApiMessage(payload, `Request failed (${response.status}).`),
+      extractApiMessage(payload, i18n.t("api.requestFailed", { status: response.status })),
       response.status,
       payload,
     );

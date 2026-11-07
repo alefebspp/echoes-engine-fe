@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 type ToastTone = "ok" | "warn" | "error";
 
@@ -29,6 +30,7 @@ const toneStyles: Record<ToastTone, string> = {
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   const [toasts, setToasts] = useState<Toast[]>([]);
   const nextId = useRef(1);
 
@@ -70,7 +72,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               type="button"
               onClick={() => dismiss(toast.id)}
               className="rounded-sm px-1 text-ink_text-faint transition-colors hover:text-lilac"
-              aria-label="Dismiss notification"
+              aria-label={t("common.dismissNotification")}
             >
               ×
             </button>

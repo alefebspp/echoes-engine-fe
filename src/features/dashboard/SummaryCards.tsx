@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { StatCard } from "@/shared/components/StatCard";
 import { formatNumber, formatSummaryValue, humanizeKey } from "@/shared/utils/formatNumber";
 import { formatShortDate } from "@/shared/utils/formatDate";
@@ -13,6 +14,7 @@ interface Props {
  * `summary` (whose exact shape isn't guaranteed) rather than assuming fields.
  */
 export function SummaryCards({ stats }: Props) {
+  const { t } = useTranslation();
   const totalEvents = stats.eventsByDay.reduce((acc, d) => acc + d.count, 0);
   const activeDays = stats.eventsByDay.filter((d) => d.count > 0).length;
   const busiest = stats.eventsByDay.reduce<typeof stats.eventsByDay[number] | null>(
@@ -23,30 +25,40 @@ export function SummaryCards({ stats }: Props) {
   const derived = [
     {
       key: "total",
-      label: "Captured this period",
+      label: t("dashboard.summary.captured"),
       value: formatNumber(totalEvents),
-      hint: `across ${stats.periodDays} days`,
+      hint: t("dashboard.summary.capturedHint", { days: stats.periodDays }),
       tone: "cyan" as const,
     },
     {
       key: "active-days",
-      label: "Active days",
+      label: t("dashboard.summary.activeDays"),
       value: formatNumber(activeDays),
-      hint: activeDays === 0 ? "no activity yet" : `of ${stats.eventsByDay.length || stats.periodDays}`,
+      hint:
+        activeDays === 0
+          ? t("dashboard.summary.activeDaysNone")
+          : t("dashboard.summary.activeDaysOf", {
+              total: stats.eventsByDay.length || stats.periodDays,
+            }),
       tone: "blue" as const,
     },
     {
       key: "domains",
-      label: "Tracked domains",
+      label: t("dashboard.summary.domains"),
       value: formatNumber(stats.topDomains.length),
-      hint: stats.topDomains[0] ? `top: ${stats.topDomains[0].domain}` : "none yet",
+      hint: stats.topDomains[0]
+        ? t("dashboard.summary.domainsTop", { domain: stats.topDomains[0].domain })
+        : t("dashboard.summary.domainsNone"),
       tone: "blue" as const,
     },
     {
       key: "busiest",
-      label: "Busiest day",
+      label: t("dashboard.summary.busiest"),
       value: busiest && busiest.count > 0 ? formatShortDate(busiest.date) : "—",
-      hint: busiest && busiest.count > 0 ? `${formatNumber(busiest.count)} events` : "awaiting data",
+      hint:
+        busiest && busiest.count > 0
+          ? t("common.events", { count: busiest.count, value: formatNumber(busiest.count) })
+          : t("dashboard.summary.awaitingData"),
       tone: "amber" as const,
     },
   ];
@@ -64,7 +76,7 @@ export function SummaryCards({ stats }: Props) {
     }));
 
   return (
-    <section aria-label="Summary" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+    <section aria-label={t("dashboard.summary.label")} className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       {derived.map((card) => (
         <StatCard
           key={card.key}
