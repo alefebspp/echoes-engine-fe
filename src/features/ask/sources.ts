@@ -1,4 +1,5 @@
 import { formatDateTime } from "@/shared/utils/formatDate";
+import { i18n } from "@/shared/i18n";
 import type { AskCitation, AskResponse } from "./types";
 
 const CLOSE_MATCH = 0.75;
@@ -15,7 +16,7 @@ export interface ListedSource {
 
 export function formatOccurred(value: string): string {
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Unknown date";
+  if (Number.isNaN(date.getTime())) return i18n.t("common.unknownDate");
   return formatDateTime(date);
 }
 
@@ -34,7 +35,7 @@ export function listSources(response: AskResponse): ListedSource[] {
     const url = safeHttpUrl(row.url);
     const host = url ? hostnameOf(url) : null;
     const named = row.title?.trim() || null;
-    const title = named || host || "Untitled";
+    const title = named || host || i18n.t("common.untitled");
 
     return {
       eventId: row.eventId,

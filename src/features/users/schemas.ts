@@ -4,14 +4,15 @@ import { z } from "zod";
  * Profile updates map to PATCH /users/:id. Password is optional and only sent
  * when provided. `superRefine` enforces "at least one changed field" against the
  * current values, since an empty PATCH is meaningless to the backend.
+ * Messages are i18n keys, resolved at render time by `useFieldError`.
  */
 export const profileSchema = z.object({
-  name: z.string().trim().min(1, "Enter a name.").max(100, "Max 100 characters."),
-  surname: z.string().trim().min(1, "Enter a surname.").max(100, "Max 100 characters."),
-  email: z.string().min(1, "Enter an email.").email("Use a valid email address."),
+  name: z.string().trim().min(1, "validation.nameRequiredShort").max(100, "validation.max100"),
+  surname: z.string().trim().min(1, "validation.surnameRequiredShort").max(100, "validation.max100"),
+  email: z.string().min(1, "validation.emailRequiredShort").email("validation.emailInvalid"),
   password: z
     .union([
-      z.string().min(8, "Password must be at least 8 characters.").max(72, "Max 72 characters."),
+      z.string().min(8, "validation.passwordMin").max(72, "validation.max72"),
       z.literal(""),
     ])
     .optional(),

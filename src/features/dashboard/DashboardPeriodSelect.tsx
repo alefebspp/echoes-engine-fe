@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { PERIOD_OPTIONS } from "./types";
 import type { PeriodDays } from "./types";
 
@@ -9,11 +10,12 @@ interface Props {
 
 /** Segmented control for the dashboard window. Only the five allowed periods. */
 export function DashboardPeriodSelect({ value, onChange, disabled }: Props) {
+  const { t } = useTranslation();
   return (
     <div
       className="inline-flex items-center gap-1 rounded-sm border border-hairline bg-surface-0 p-1"
       role="group"
-      aria-label="Dashboard period in days"
+      aria-label={t("dashboard.period.groupLabel")}
     >
       {PERIOD_OPTIONS.map((option) => {
         const active = option === value;
@@ -30,7 +32,7 @@ export function DashboardPeriodSelect({ value, onChange, disabled }: Props) {
                 : "text-ink_text-muted hover:bg-surface-2 hover:text-lilac"
             }`}
           >
-            {option}d
+            {t("dashboard.period.option", { days: option })}
           </button>
         );
       })}

@@ -1,3 +1,4 @@
+import { currentLanguage, i18n } from "@/shared/i18n";
 import type { AskRequest, AskScope, ScopeChip } from "./types";
 
 export const QUESTION_MIN = 3;
@@ -12,12 +13,17 @@ interface CalendarDate {
   d: number;
 }
 
-const MONTH_LABEL = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" });
-const DAY_LABEL = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-});
+function monthLabel(date: Date): string {
+  return new Intl.DateTimeFormat(currentLanguage(), { month: "long", year: "numeric" }).format(date);
+}
+
+function dayLabel(date: Date): string {
+  return new Intl.DateTimeFormat(currentLanguage(), {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
 
 function parseCalendarDate(value: string): CalendarDate | null {
   const match = ISO_DATE.exec(value);
@@ -35,7 +41,7 @@ function parseCalendarDate(value: string): CalendarDate | null {
 function formatDay(value: string): string {
   const parsed = parseCalendarDate(value);
   if (!parsed) return value;
-  return DAY_LABEL.format(new Date(parsed.y, parsed.m - 1, parsed.d));
+  return dayLabel(new Date(parsed.y, parsed.m - 1, parsed.d));
 }
 
 function fullMonthLabel(from: string, to: string): string | null {
@@ -44,7 +50,7 @@ function fullMonthLabel(from: string, to: string): string | null {
   if (!start || !end) return null;
   if (start.y !== end.y || start.m !== end.m || start.d !== 1) return null;
   if (end.d !== new Date(start.y, start.m, 0).getDate()) return null;
-  return MONTH_LABEL.format(new Date(start.y, start.m - 1, 1));
+  return monthLabel(new Date(start.y, start.m - 1, 1));
 }
 
 export function scopeChips(scope: AskScope): ScopeChip[] {
@@ -59,9 +65,9 @@ export function scopeChips(scope: AskScope): ScopeChip[] {
         : `${formatDay(scope.from)} – ${formatDay(scope.to)}`);
     chips.push({ key: "dates", kind: "dates", label });
   } else if (scope.from) {
-    chips.push({ key: "from", kind: "from", label: `From ${formatDay(scope.from)}` });
+    chips.push({ key: "from", kind: "from", label: i18n.t("ask.chipFrom", { date: formatDay(scope.from) }) });
   } else if (scope.to) {
-    chips.push({ key: "to", kind: "to", label: `Until ${formatDay(scope.to)}` });
+    chips.push({ key: "to", kind: "to", label: i18n.t("ask.chipUntil", { date: formatDay(scope.to) }) });
   }
 
   for (const tag of scope.tags) {
@@ -85,25 +91,25 @@ export function hasFilters(scope: AskScope): boolean {
 }
 
 export function refusalMessage(scope: AskScope): string {
-  if (scope.from || scope.to) return "Nothing in that range matched.";
-  if (scope.tags.length > 0) return "Nothing with those tags matched.";
-  return "Nothing in your history was close to that question. Try a more specific one.";
+  if (scope.from || scope.to) return i18n.t("ask.refusal.range");
+  if (scope.tags.length > 0) return i18n.t("ask.refusal.tags");
+  return i18n.t("ask.refusal.none");
 }
 
 export function validateQuestion(question: string): string | null {
   const trimmed = question.trim();
-  if (trimmed.length < QUESTION_MIN) return "Ask at least a few words.";
-  if (trimmed.length > QUESTION_MAX) return "Keep the question under 2,000 characters.";
+  if (trimmed.length < QUESTION_MIN) return i18n.t("ask.validation.questionShort");
+  if (trimmed.length > QUESTION_MAX) return i18n.t("ask.validation.questionLong");
   return null;
 }
 
 export function validateScope(scope: AskScope): string | null {
-  if (scope.from && !parseCalendarDate(scope.from)) return "Use a real start date.";
-  if (scope.to && !parseCalendarDate(scope.to)) return "Use a real end date.";
+  if (scope.from && !parseCalendarDate(scope.from)) return i18n.t("ask.validation.startDate");
+  if (scope.to && !parseCalendarDate(scope.to)) return i18n.t("ask.validation.endDate");
   if (scope.from && scope.to && scope.from > scope.to) {
-    return "The start date has to come before the end date.";
+    return i18n.t("ask.validation.dateOrder");
   }
-  if (scope.tags.length > TAG_MAX) return "Use at most 20 tags.";
+  if (scope.tags.length > TAG_MAX) return i18n.t("ask.validation.tagLimit");
   return null;
 }
 

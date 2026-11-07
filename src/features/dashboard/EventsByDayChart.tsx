@@ -1,4 +1,5 @@
 import { useId, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardHeader, CardBody } from "@/shared/components/Card";
 import { EmptyState } from "@/shared/components/EmptyState";
 import { formatShortDate, formatFullDate } from "@/shared/utils/formatDate";
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function EventsByDayChart({ data }: Props) {
+  const { t } = useTranslation();
   const fillId = useId();
   const strokeId = useId();
 
@@ -49,18 +51,22 @@ export function EventsByDayChart({ data }: Props) {
     <Card>
       <CardHeader
         as="h2"
-        title="Events by day"
+        title={t("dashboard.eventsByDay.title")}
         subtitle={
           model
-            ? `${formatNumber(model.total)} captured · peak ${formatNumber(model.peak.count)} on ${formatShortDate(model.peak.date)}`
-            : "Daily capture volume"
+            ? t("dashboard.eventsByDay.subtitle", {
+                total: formatNumber(model.total),
+                peak: formatNumber(model.peak.count),
+                date: formatShortDate(model.peak.date),
+              })
+            : t("dashboard.eventsByDay.subtitleEmpty")
         }
       />
       <CardBody>
         {!model ? (
           <EmptyState
-            title="No daily activity yet"
-            description="Once events are captured, each day's volume traces a line here."
+            title={t("dashboard.eventsByDay.emptyTitle")}
+            description={t("dashboard.eventsByDay.emptyBody")}
           />
         ) : (
           <svg
@@ -68,7 +74,11 @@ export function EventsByDayChart({ data }: Props) {
             width="100%"
             height={H}
             role="img"
-            aria-label={`Events by day. ${formatNumber(model.total)} events total, peaking at ${formatNumber(model.peak.count)} on ${formatFullDate(model.peak.date)}.`}
+            aria-label={t("dashboard.eventsByDay.aria", {
+              total: formatNumber(model.total),
+              peak: formatNumber(model.peak.count),
+              date: formatFullDate(model.peak.date),
+            })}
             className="overflow-visible"
           >
             <defs>
@@ -103,7 +113,7 @@ export function EventsByDayChart({ data }: Props) {
                   height={H - PAD.top - PAD.bottom}
                   fill="transparent"
                 >
-                  <title>{`${formatFullDate(p.date)} · ${formatNumber(p.count)} events`}</title>
+                  <title>{`${formatFullDate(p.date)} · ${t("common.events", { count: p.count, value: formatNumber(p.count) })}`}</title>
                 </rect>
                 <circle
                   cx={p.x}

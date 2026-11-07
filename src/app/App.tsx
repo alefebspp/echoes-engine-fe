@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { i18n } from "@/shared/i18n";
 import { BrowserRouter } from "react-router-dom";
 import { AppProviders } from "./providers";
 import { AppRoutes } from "./router";
@@ -17,7 +18,7 @@ function AuthBridge() {
     setUnauthorizedHandler(() => {
       if (authStore.isAuthenticated()) {
         authStore.clear();
-        notify("Your session expired. Sign in again.", "warn");
+        notify(i18n.t("session.expired"), "warn");
       }
     });
     return () => setUnauthorizedHandler(() => {});

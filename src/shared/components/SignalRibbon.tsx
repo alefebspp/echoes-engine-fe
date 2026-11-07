@@ -1,4 +1,5 @@
 import { useId, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { formatFullDate } from "@/shared/utils/formatDate";
 import { formatNumber } from "@/shared/utils/formatNumber";
 
@@ -29,9 +30,11 @@ export function SignalRibbon({
   data,
   height = 96,
   animate = true,
-  caption = "Captured activity over the selected period",
+  caption: captionProp,
   className,
 }: SignalRibbonProps) {
+  const { t } = useTranslation();
+  const caption = captionProp ?? t("ribbon.defaultCaption");
   const gradientId = useId();
   const glowId = useId();
 
@@ -73,9 +76,11 @@ export function SignalRibbon({
   const maxArm = height / 2 - 6;
 
   const summary = hasData
-    ? `${caption}. ${formatNumber(total)} events total across ${data.length} days` +
-      (peak ? `, peaking at ${formatNumber(peak.count)} on ${formatFullDate(peak.date)}.` : ".")
-    : `${caption}. No activity captured yet.`;
+    ? t("ribbon.summary", { caption, total: formatNumber(total), days: data.length }) +
+      (peak
+        ? t("ribbon.peak", { count: formatNumber(peak.count), date: formatFullDate(peak.date) })
+        : ".")
+    : t("ribbon.empty", { caption });
 
   return (
     <figure className={className}>
@@ -164,7 +169,7 @@ export function SignalRibbon({
                   opacity={0.35 + bar.intensity * 0.65}
                   filter={isPeak ? `url(#${glowId})` : undefined}
                 >
-                  <title>{`${formatFullDate(bar.date)} · ${formatNumber(bar.count)} events`}</title>
+                  <title>{`${formatFullDate(bar.date)} · ${t("common.events", { count: bar.count, value: formatNumber(bar.count) })}`}</title>
                 </rect>
               </g>
             );

@@ -1,11 +1,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/shared/components/Input";
 import { Button } from "@/shared/components/Button";
 import { FormBanner } from "@/shared/components/FormBanner";
 import { useToast } from "@/shared/components/Toast";
 import { toUserMessage } from "@/shared/api/apiErrors";
+import { useFieldError } from "@/shared/i18n/useFieldError";
 import { profileSchema, diffProfile } from "./schemas";
 import type { ProfileInput } from "./schemas";
 import { updateUser, userKeys } from "./api";
@@ -14,11 +16,12 @@ import { authStore } from "@/shared/auth/authStore";
 
 interface Props {
   user: User;
-  /** Label tweaks when editing your own profile vs. another user. */
-  selfEdit?: boolean;
 }
 
-export function UserEditForm({ user, selfEdit = false }: Props) {
+/** Edits the signed-in user's own profile. */
+export function UserEditForm({ user }: Props) {
+  const { t } = useTranslation();
+  const fieldError = useFieldError();
   const queryClient = useQueryClient();
   const { notify } = useToast();
 
@@ -39,21 +42,11 @@ export function UserEditForm({ user, selfEdit = false }: Props) {
   });
 
   const mutation = useMutation({
-    mutationFn: (values: ProfileInput) => {
-      const changes = diffProfile(values, user);
-      if (Object.keys(changes).length === 0) {
-        return Promise.reject(new Error("Change at least one field before saving."));
-      }
-      return updateUser(user.id, changes);
-    },
+    mutationFn: (changes: ReturnType<typeof diffProfile>) => updateUser(user.id, changes),
     onSuccess: (updated) => {
-      notify(selfEdit ? "Profile saved." : "User updated.", "ok");
-      queryClient.setQueryData(userKeys.detail(user.id), updated);
-      if (selfEdit) {
-        queryClient.setQueryData(userKeys.me, updated);
-        authStore.setSession(updated);
-      }
-      void queryClient.invalidateQueries({ queryKey: userKeys.all });
+      notify(t("profile.form.saved"), "ok");
+      queryClient.setQueryData(userKeys.me, updated);
+      authStore.setSession(updated);
       reset({
         name: updated.name,
         surname: updated.surname,
@@ -61,57 +54,62 @@ export function UserEditForm({ user, selfEdit = false }: Props) {
         password: "",
       });
     },
-    onError: (error) => {
-      if (error instanceof Error && error.message.startsWith("Change at least one")) {
-        setError("root", { message: error.message });
-      }
-    },
+  });
+
+  const submit = handleSubmit((values) => {
+    const changes = diffProfile(values, user);
+    if (Object.keys(changes).length === 0) {
+      setError("root", { message: "profile.form.noChanges" });
+      return;
+    }
+    mutation.mutate(changes);
   });
 
   return (
-    <form
-      className="flex flex-col gap-4"
-      onSubmit={handleSubmit((values) => mutation.mutate(values))}
-      noValidate
-    >
+    <form className="flex flex-col gap-4" onSubmit={submit} noValidate>
       {(mutation.isError || errors.root) && (
         <FormBanner tone="error">
-          {errors.root?.message ?? toUserMessage(mutation.error)}
+          {fieldError(errors.root?.message) ?? toUserMessage(mutation.error)}
         </FormBanner>
       )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Input id="name" label="First name" error={errors.name?.message} {...field("name")} />
+        <Input
+          id="name"
+          label={t("profile.form.firstName")}
+          error={fieldError(errors.name?.message)}
+          {...field("name")}
+        />
         <Input
           id="surname"
-          label="Surname"
-          error={errors.surname?.message}
+          label={t("profile.form.surname")}
+          error={fieldError(errors.surname?.message)}
           {...field("surname")}
         />
       </div>
       <Input
         id="email"
         type="email"
-        label="Email"
+        label={t("profile.form.email")}
         autoComplete="email"
-        error={errors.email?.message}
+        error={fieldError(errors.email?.message)}
         {...field("email")}
       />
       <Input
         id="password"
         type="password"
-        label="New password"
+        label={t("profile.form.newPassword")}
         optional
         autoComplete="new-password"
-        placeholder="Leave blank to keep current"
-        hint="8–72 characters."
-        error={errors.password?.message}
+        placeholder={t("profile.form.passwordPlaceholder")}
+        hint={t("profile.form.passwordHint")}
+        error={fieldError(errors.password?.message)}
         {...field("password")}
       />
 
       <div className="flex items-center gap-2.5">
-        <Button type="submit" isLoading={mutation.isPending} loadingText="Saving…">
-          Save changes
+        <Button type="submit" isLoading={mutation.isPending} loadingText={t("profile.form.saving")}>
+          {t("profile.form.save")}
         </Button>
         <Button
           type="button"
@@ -125,7 +123,7 @@ export function UserEditForm({ user, selfEdit = false }: Props) {
             })
           }
         >
-          Reset
+          {t("profile.form.reset")}
         </Button>
       </div>
     </form>

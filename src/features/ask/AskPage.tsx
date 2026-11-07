@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/shared/components/PageHeader";
 import { askQuestion } from "./api";
 import { noticeFromError } from "./askErrors";
@@ -14,6 +15,7 @@ const emptyScope = (): AskScope => ({ from: "", to: "", tags: [] });
  * Earlier readings stay on screen, but each submit is a new request.
  */
 export function AskPage() {
+  const { t } = useTranslation();
   const [question, setQuestion] = useState("");
   const [scope, setScope] = useState<AskScope>(emptyScope);
   const [scopeOpen, setScopeOpen] = useState(false);
@@ -105,9 +107,9 @@ export function AskPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Ask"
-        title="Ask the pages you opened"
-        description="Each question stands on its own, and the pages you opened are the result."
+        eyebrow={t("ask.eyebrow")}
+        title={t("ask.title")}
+        description={t("ask.description")}
       />
 
       <div className="min-w-0 max-w-[46rem] border-l-2 border-trace pl-4 sm:pl-5">

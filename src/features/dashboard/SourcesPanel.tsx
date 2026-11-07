@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardHeader, CardBody, CardDivider } from "@/shared/components/Card";
 import { EmptyState } from "@/shared/components/EmptyState";
 import { BarMeter } from "./BarMeter";
@@ -9,12 +10,17 @@ interface Props {
 }
 
 export function SourcesPanel({ sources, browsers }: Props) {
+  const { t } = useTranslation();
   const hasSources = sources.length > 0;
   const hasBrowsers = browsers.length > 0;
 
   return (
     <Card>
-      <CardHeader as="h2" title="Sources" subtitle="Where signals came from" />
+      <CardHeader
+        as="h2"
+        title={t("dashboard.sources.title")}
+        subtitle={t("dashboard.sources.subtitle")}
+      />
       <CardBody>
         {hasSources ? (
           <BarMeter
@@ -28,8 +34,8 @@ export function SourcesPanel({ sources, browsers }: Props) {
           />
         ) : (
           <EmptyState
-            title="No sources yet"
-            description="Each capture channel (like a browser extension) will appear here."
+            title={t("dashboard.sources.emptyTitle")}
+            description={t("dashboard.sources.emptyBody")}
           />
         )}
       </CardBody>
@@ -37,7 +43,7 @@ export function SourcesPanel({ sources, browsers }: Props) {
       <CardDivider />
 
       <div className="px-[1.35rem] pb-[0.4rem] pt-[1.1rem]">
-        <h3 className="font-display text-h3 font-semibold">Browsers</h3>
+        <h3 className="font-display text-h3 font-semibold">{t("dashboard.sources.browsers")}</h3>
       </div>
       <CardBody>
         {hasBrowsers ? (
@@ -51,8 +57,8 @@ export function SourcesPanel({ sources, browsers }: Props) {
           />
         ) : (
           <EmptyState
-            title="No browsers yet"
-            description="Browser breakdown appears once visit events include a browser."
+            title={t("dashboard.sources.browsersEmptyTitle")}
+            description={t("dashboard.sources.browsersEmptyBody")}
             showBaseline={false}
           />
         )}

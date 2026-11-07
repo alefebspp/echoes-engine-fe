@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { AuthLayout } from "./AuthLayout";
 import { loginSchema } from "./schemas";
 import type { LoginInput } from "./schemas";
@@ -11,12 +12,15 @@ import { Input } from "@/shared/components/Input";
 import { Button } from "@/shared/components/Button";
 import { FormBanner } from "@/shared/components/FormBanner";
 import { toUserMessage } from "@/shared/api/apiErrors";
+import { useFieldError } from "@/shared/i18n/useFieldError";
 
 interface LocationState {
   from?: { pathname: string };
 }
 
 export function LoginPage() {
+  const { t } = useTranslation();
+  const fieldError = useFieldError();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectTo =
@@ -41,12 +45,12 @@ export function LoginPage() {
 
   return (
     <AuthLayout
-      eyebrow="Sign in"
-      title="Return to your observatory"
-      description="Pick up where your captured activity left off."
+      eyebrow={t("auth.login.eyebrow")}
+      title={t("auth.login.title")}
+      description={t("auth.login.description")}
       footer={
         <>
-          No account yet? <Link to="/register">Create one</Link>.
+          {t("auth.login.noAccount")} <Link to="/register">{t("auth.login.createOne")}</Link>.
         </>
       }
     >
@@ -62,19 +66,19 @@ export function LoginPage() {
         <Input
           id="email"
           type="email"
-          label="Email"
+          label={t("auth.email")}
           autoComplete="email"
-          placeholder="you@example.com"
-          error={errors.email?.message}
+          placeholder={t("auth.login.emailPlaceholder")}
+          error={fieldError(errors.email?.message)}
           {...field("email")}
         />
         <Input
           id="password"
           type="password"
-          label="Password"
+          label={t("auth.password")}
           autoComplete="current-password"
-          placeholder="Your password"
-          error={errors.password?.message}
+          placeholder={t("auth.login.passwordPlaceholder")}
+          error={fieldError(errors.password?.message)}
           {...field("password")}
         />
 
@@ -82,9 +86,9 @@ export function LoginPage() {
           type="submit"
           block
           isLoading={mutation.isPending}
-          loadingText="Signing in…"
+          loadingText={t("auth.login.submitting")}
         >
-          Sign in
+          {t("auth.login.submit")}
         </Button>
       </form>
     </AuthLayout>

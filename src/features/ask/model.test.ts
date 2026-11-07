@@ -174,7 +174,9 @@ describe("ask errors", () => {
     expect(
       noticeFromError(
         new ApiError("bad", 400, {
+          code: "VALIDATION_FAILED",
           message: ["question must be longer than or equal to 3 characters"],
+          details: [{ field: "question", rules: ["minLength"] }],
         }),
       ),
     ).toEqual({ kind: "field", message: "Ask at least a few words." });

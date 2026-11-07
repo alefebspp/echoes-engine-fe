@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/shared/components/Button";
 import { AnswerText, sourceDomId } from "./AnswerText";
 import { ScopeChips } from "./ScopeChips";
@@ -14,6 +15,7 @@ interface AskReadingProps {
 }
 
 export function AskReading({ reading, disabled = false, onRestore }: AskReadingProps) {
+  const { t } = useTranslation();
   const pagesId = useId();
   const sources = listSources(reading.response);
   const chips = scopeChips(reading.scope);
@@ -36,7 +38,7 @@ export function AskReading({ reading, disabled = false, onRestore }: AskReadingP
       <ScopeChips
         className="mt-3"
         chips={chips}
-        label="Filters on this question"
+        label={t("ask.filtersThis")}
         disabled={disabled}
         onRemove={(chip) => onRestore(reading.question, scopeWithout(reading.scope, chip))}
       />
@@ -49,7 +51,7 @@ export function AskReading({ reading, disabled = false, onRestore }: AskReadingP
 
       {response.mode === "snippets_only" && (
         <p className="mt-4 max-w-[62ch] font-mono text-sm leading-relaxed text-ink_text-muted">
-          {response.answer ?? "A written summary is unavailable. These pages still matched."}
+          {response.answer ?? t("ask.snippetsFallback")}
         </p>
       )}
 
@@ -64,7 +66,7 @@ export function AskReading({ reading, disabled = false, onRestore }: AskReadingP
               disabled={disabled}
               onClick={() => onRestore(reading.question, { from: "", to: "", tags: [] })}
             >
-              Clear filters
+              {t("ask.clearFilters")}
             </Button>
           )}
         </div>
@@ -73,7 +75,7 @@ export function AskReading({ reading, disabled = false, onRestore }: AskReadingP
       {sources.length > 0 && (
         <div className="mt-6">
           <h3 id={pagesId} className="eyebrow mb-1">
-            Pages
+            {t("ask.pages")}
           </h3>
           <ol aria-labelledby={pagesId} className="mt-1 list-none divide-y divide-hairline">
             {sources.map((source) => (
@@ -87,6 +89,7 @@ export function AskReading({ reading, disabled = false, onRestore }: AskReadingP
 }
 
 function SourceRow({ source, turnId }: { source: ListedSource; turnId: string }) {
+  const { t } = useTranslation();
   return (
     <li
       id={sourceDomId(turnId, source.n)}
@@ -105,7 +108,7 @@ function SourceRow({ source, turnId }: { source: ListedSource; turnId: string })
             className="break-words font-display text-h3 font-medium leading-snug"
           >
             {source.title}
-            <span className="sr-only"> (opens in a new tab)</span>
+            <span className="sr-only">{t("ask.opensNewTab")}</span>
           </a>
         ) : (
           <p className="break-words font-display text-h3 font-medium leading-snug text-ink_text-bright">
@@ -119,10 +122,11 @@ function SourceRow({ source, turnId }: { source: ListedSource; turnId: string })
 }
 
 function SourceMeta({ source }: { source: ListedSource }) {
+  const { t } = useTranslation();
   const bits: Array<{ key: string; text: string; emphasized?: boolean }> = [];
   if (source.host) bits.push({ key: "host", text: source.host });
   bits.push({ key: "when", text: formatOccurred(source.occurredAt) });
-  if (source.closeMatch) bits.push({ key: "match", text: "close match", emphasized: true });
+  if (source.closeMatch) bits.push({ key: "match", text: t("ask.closeMatch"), emphasized: true });
 
   return (
     <p className="mt-1 font-mono text-micro leading-relaxed text-ink_text-faint">

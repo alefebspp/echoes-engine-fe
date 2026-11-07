@@ -236,7 +236,11 @@ describe("AskPage", () => {
 
   it("leaves the question in the field when the search fails", async () => {
     mockAsk.mockRejectedValueOnce(
-      new ApiError("bad", 400, { message: ["question must be longer than or equal to 3 characters"] }),
+      new ApiError("bad", 400, {
+        code: "VALIDATION_FAILED",
+        message: ["question must be longer than or equal to 3 characters"],
+        details: [{ field: "question", rules: ["minLength"] }],
+      }),
     );
     const user = renderPage();
     await ask(user, "Hey");
@@ -246,6 +250,7 @@ describe("AskPage", () => {
 
     mockAsk.mockRejectedValueOnce(
       new ApiError("ThrottlerException: Too Many Requests", 429, {
+        code: "RATE_LIMITED",
         message: "ThrottlerException: Too Many Requests",
       }),
     );

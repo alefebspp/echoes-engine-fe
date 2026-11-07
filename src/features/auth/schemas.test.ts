@@ -6,7 +6,7 @@ describe("loginSchema", () => {
     const result = loginSchema.safeParse({ email: "not-an-email", password: "x" });
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe("Use a valid email address.");
+      expect(result.error.issues[0].message).toBe("validation.emailInvalid");
     }
   });
 
@@ -36,7 +36,7 @@ describe("registerSchema", () => {
     const result = registerSchema.safeParse({ ...valid, password: "short" });
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe("Password must be at least 8 characters.");
+      expect(result.error.issues[0].message).toBe("validation.passwordMin");
     }
   });
 

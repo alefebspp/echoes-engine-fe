@@ -7,10 +7,7 @@ import { RegisterPage } from "@/features/auth/RegisterPage";
 import { DashboardPage } from "@/features/dashboard/DashboardPage";
 import { AskPage } from "@/features/ask/AskPage";
 import { ActivityPage } from "@/features/dashboard/ActivityPage";
-import { SendTestEventPage } from "@/features/events/SendTestEventPage";
 import { ProfilePage } from "@/features/users/ProfilePage";
-import { UsersPage } from "@/features/users/UsersPage";
-import { UserDetailsPage } from "@/features/users/UserDetailsPage";
 import { NotFoundPage } from "@/features/landing/NotFoundPage";
 
 export function AppRoutes() {
@@ -46,10 +43,7 @@ export function AppRoutes() {
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="ask" element={<AskPage />} />
         <Route path="activity" element={<ActivityPage />} />
-        <Route path="events/test" element={<SendTestEventPage />} />
         <Route path="profile" element={<ProfilePage />} />
-        <Route path="users" element={<UsersPage />} />
-        <Route path="users/:id" element={<UserDetailsPage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

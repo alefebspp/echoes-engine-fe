@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardHeader, CardBody } from "@/shared/components/Card";
 import { EmptyState } from "@/shared/components/EmptyState";
 import { formatHourLabel } from "@/shared/utils/formatDate";
@@ -12,6 +13,7 @@ interface Props {
 const TICKS = [0, 6, 12, 18];
 
 export function ActivityByHourChart({ data }: Props) {
+  const { t } = useTranslation();
   const { hours, max, total, busiest } = useMemo(() => {
     // Fill the full 0–23 range so the map always reads as a complete day.
     const byHour = new Map(data.map((d) => [d.hour, d.count]));
@@ -31,23 +33,26 @@ export function ActivityByHourChart({ data }: Props) {
     <Card>
       <CardHeader
         as="h2"
-        title="Activity by hour"
+        title={t("dashboard.byHour.title")}
         subtitle={
           hasData
-            ? `Busiest around ${formatHourLabel(busiest.hour)}`
-            : "When activity collects across the day"
+            ? t("dashboard.byHour.busiest", { hour: formatHourLabel(busiest.hour) })
+            : t("dashboard.byHour.subtitleEmpty")
         }
       />
       <CardBody>
         {!hasData ? (
           <EmptyState
-            title="No hourly rhythm yet"
-            description="Captured events will resolve into a 24-hour map of when you're active."
+            title={t("dashboard.byHour.emptyTitle")}
+            description={t("dashboard.byHour.emptyBody")}
           />
         ) : (
           <div
             role="img"
-            aria-label={`Activity by hour. Busiest around ${formatHourLabel(busiest.hour)} with ${formatNumber(busiest.count)} events.`}
+            aria-label={t("dashboard.byHour.aria", {
+              hour: formatHourLabel(busiest.hour),
+              count: formatNumber(busiest.count),
+            })}
           >
             <div className="flex h-32 items-end gap-[3px]">
               {hours.map((h) => {
@@ -65,7 +70,7 @@ export function ActivityByHourChart({ data }: Props) {
                         height: `${heightPct}%`,
                         opacity: 0.35 + intensity * 0.65,
                       }}
-                      title={`${formatHourLabel(h.hour)} · ${formatNumber(h.count)} events`}
+                      title={`${formatHourLabel(h.hour)} · ${t("common.events", { count: h.count, value: formatNumber(h.count) })}`}
                     />
                   </div>
                 );

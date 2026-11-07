@@ -1,17 +1,19 @@
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { LoadingBlock } from "@/shared/components/Feedback";
 import { useAuth } from "./useAuth";
 
 /** Gate for /app/* — sends signed-out visitors to /login, remembering where they were headed. */
 export function RequireAuth({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   const { isAuthenticated, isBootstrapping } = useAuth();
   const location = useLocation();
 
   if (isBootstrapping) {
     return (
       <div className="flex min-h-screen items-center justify-center px-5">
-        <LoadingBlock label="Checking session…" />
+        <LoadingBlock label={t("common.checkingSession")} />
       </div>
     );
   }
@@ -24,12 +26,13 @@ export function RequireAuth({ children }: { children: ReactNode }) {
 
 /** Inverse gate for /login and /register — signed-in visitors skip ahead to the dashboard. */
 export function RedirectIfAuthenticated({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   const { isAuthenticated, isBootstrapping } = useAuth();
 
   if (isBootstrapping) {
     return (
       <div className="flex min-h-screen items-center justify-center px-5">
-        <LoadingBlock label="Checking session…" />
+        <LoadingBlock label={t("common.checkingSession")} />
       </div>
     );
   }

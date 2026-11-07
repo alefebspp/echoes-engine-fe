@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { AuthLayout } from "./AuthLayout";
 import { registerSchema } from "./schemas";
 import type { RegisterInput } from "./schemas";
@@ -11,8 +12,11 @@ import { Input } from "@/shared/components/Input";
 import { Button } from "@/shared/components/Button";
 import { FormBanner } from "@/shared/components/FormBanner";
 import { toUserMessage } from "@/shared/api/apiErrors";
+import { useFieldError } from "@/shared/i18n/useFieldError";
 
 export function RegisterPage() {
+  const { t } = useTranslation();
+  const fieldError = useFieldError();
   const navigate = useNavigate();
 
   const {
@@ -37,12 +41,12 @@ export function RegisterPage() {
 
   return (
     <AuthLayout
-      eyebrow="Create account"
-      title="Start your memory observatory"
-      description="Register to begin turning captured activity into legible signals."
+      eyebrow={t("auth.register.eyebrow")}
+      title={t("auth.register.title")}
+      description={t("auth.register.description")}
       footer={
         <>
-          Already have an account? <Link to="/login">Sign in</Link>.
+          {t("auth.register.haveAccount")} <Link to="/login">{t("auth.register.signIn")}</Link>.
         </>
       }
     >
@@ -58,38 +62,38 @@ export function RegisterPage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Input
             id="name"
-            label="First name"
+            label={t("auth.register.firstName")}
             autoComplete="given-name"
-            placeholder="Jane"
-            error={errors.name?.message}
+            placeholder={t("auth.register.firstNamePlaceholder")}
+            error={fieldError(errors.name?.message)}
             {...field("name")}
           />
           <Input
             id="surname"
-            label="Surname"
+            label={t("auth.register.surname")}
             autoComplete="family-name"
-            placeholder="Doe"
-            error={errors.surname?.message}
+            placeholder={t("auth.register.surnamePlaceholder")}
+            error={fieldError(errors.surname?.message)}
             {...field("surname")}
           />
         </div>
         <Input
           id="email"
           type="email"
-          label="Email"
+          label={t("auth.email")}
           autoComplete="email"
-          placeholder="jane@example.com"
-          error={errors.email?.message}
+          placeholder={t("auth.register.emailPlaceholder")}
+          error={fieldError(errors.email?.message)}
           {...field("email")}
         />
         <Input
           id="password"
           type="password"
-          label="Password"
+          label={t("auth.password")}
           autoComplete="new-password"
-          placeholder="At least 8 characters"
-          hint="Use 8–72 characters."
-          error={errors.password?.message}
+          placeholder={t("auth.register.passwordPlaceholder")}
+          hint={t("auth.register.passwordHint")}
+          error={fieldError(errors.password?.message)}
           {...field("password")}
         />
 
@@ -97,9 +101,9 @@ export function RegisterPage() {
           type="submit"
           block
           isLoading={mutation.isPending}
-          loadingText="Creating account…"
+          loadingText={t("auth.register.submitting")}
         >
-          Create account
+          {t("auth.register.submit")}
         </Button>
       </form>
     </AuthLayout>
