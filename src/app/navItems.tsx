@@ -31,6 +31,19 @@ export const navItems: NavItem[] = [
     ),
   },
   {
+    to: "/app/ask",
+    label: "Ask",
+    description: "One question over your pages",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" {...stroke}>
+        <path d="M4 2.5v13" />
+        <path d="M7 5.5h7" />
+        <path d="M7 9h5.5" />
+        <path d="M7 12.5h3.5" />
+      </svg>
+    ),
+  },
+  {
     to: "/app/activity",
     label: "Activity",
     description: "Rhythm and domains",
