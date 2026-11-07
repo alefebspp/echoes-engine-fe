@@ -43,6 +43,7 @@ export const ptBR: Translations = {
     ask: { label: "Perguntar", description: "Uma pergunta sobre suas páginas" },
     activity: { label: "Atividade", description: "Ritmo e domínios" },
     profile: { label: "Perfil", description: "Sua conta" },
+    extension: { label: "Extensão", description: "Capture sua navegação" },
   },
   brand: {
     home: "Início do Echoes Engine",
@@ -114,9 +115,10 @@ export const ptBR: Translations = {
       title: "O que ele registra hoje",
       lead: "Este é um projeto de aprendizado em evolução. Veja exatamente o que já funciona.",
       live: "Ativo",
+      earlyAccess: "Acesso antecipado",
       visits: {
-        label: "Eventos de visitas no navegador",
-        body: "O backend já captura eventos WEB_VISIT — URL, título, navegador e horário.",
+        label: "Extensão para Chrome",
+        body: "Uma extensão de navegador captura cada visita — URL, título, navegador e horário. Durante o acesso antecipado, ela é instalada manualmente no modo desenvolvedor.",
       },
       analytics: {
         label: "Análises por período",
@@ -288,6 +290,62 @@ export const ptBR: Translations = {
     DUPLICATE_EXTERNAL_EVENT: "Este evento já foi registrado.",
     UNABLE_TO_STORE_EVENT: "Não foi possível salvar o evento. Tente novamente em instantes.",
     INVALID_CURSOR: "Este link de página não é mais válido. Recarregue e tente novamente.",
+  },
+  extension: {
+    eyebrow: "Extensão de navegador · acesso antecipado",
+    title: "Conecte seu navegador",
+    description:
+      "O Echoes aprende com as páginas que você visita por meio de uma pequena extensão para Chrome. Ela ainda não está na Chrome Web Store, então a instalação é manual — leva só alguns minutos.",
+    download: "Baixar a extensão",
+    downloadHint: "Um .zip com a versão mais recente",
+    stepsTitle: "Instale no modo desenvolvedor",
+    stepsSubtitle: "Chrome, Edge, Brave e outros navegadores Chromium",
+    steps: {
+      unzip: {
+        title: "Descompacte o download",
+        body: "Guarde a pasta echoes-extension em um lugar fixo. O navegador carrega a extensão a partir dela, então apagar a pasta remove a extensão.",
+      },
+      open: {
+        title: "Abra a página de extensões",
+        body: "Cole este endereço em uma nova aba. Os navegadores não permitem que sites criem links diretos para ele.",
+      },
+      devMode: {
+        title: "Ative o Modo do desenvolvedor",
+        body: "Use a chave no canto superior direito da página de extensões.",
+      },
+      load: {
+        title: "Carregue a pasta",
+        body: "Clique em “Carregar sem compactação” e selecione a pasta echoes-extension.",
+      },
+      signIn: {
+        title: "Entre pela extensão",
+        body: "Clique no ícone do Echoes na barra de ferramentas, dê seu consentimento, ative o rastreamento e entre com esta conta.",
+      },
+    },
+    copy: "Copiar",
+    copied: "Copiado",
+    copyLabel: "Copiar chrome://extensions",
+    afterInstall: "Com ela funcionando, suas visitas começam a aparecer no painel em pouco tempo.",
+    notesTitle: "Bom saber",
+    notes: {
+      warning:
+        "O navegador pode exibir um aviso sobre extensões no modo desenvolvedor. Isso é esperado enquanto o Echoes não está publicado.",
+      updates:
+        "As atualizações são manuais: baixe o novo zip, substitua o conteúdo da pasta e clique no ícone de recarregar no card da extensão.",
+      browsers: "Firefox e Safari ainda não são suportados.",
+    },
+    privacyTitle: "O que ela captura",
+    privacy: {
+      captures: "Apenas o endereço da página, o título, seu navegador e o horário da visita.",
+      never: "Nunca o conteúdo da página, campos de formulário, cookies ou senhas.",
+      control: "Você pode pausar o rastreamento a qualquer momento nas configurações da extensão.",
+    },
+    connect: {
+      eyebrow: "Nada capturado ainda",
+      title: "Conecte a extensão de navegador",
+      body: "O Echoes precisa da extensão para Chrome para registrar as páginas que você visita. Instale-a para começar a preencher este painel.",
+      cta: "Configurar a extensão",
+    },
   },
   ask: {
     eyebrow: "Perguntar",

@@ -35,6 +35,7 @@ void i18n.use(initReactI18next).init({
   nsSeparator: false,
   interpolation: { escapeValue: false },
   initAsync: false,
+  showSupportNotice: false,
 });
 
 function syncDocumentLanguage(language: string) {

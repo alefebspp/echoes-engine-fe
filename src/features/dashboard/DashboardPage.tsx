@@ -3,6 +3,8 @@ import { PageHeader } from "@/shared/components/PageHeader";
 import { Card, CardBody } from "@/shared/components/Card";
 import { LoadingBlock, ErrorBlock } from "@/shared/components/Feedback";
 import { toUserMessage } from "@/shared/api/apiErrors";
+import { ConnectExtensionCard } from "@/features/extension/ConnectExtensionCard";
+import { useHasCapturedEvents } from "@/features/extension/useHasCapturedEvents";
 import { RibbonHeader } from "./RibbonHeader";
 import { SummaryCards } from "./SummaryCards";
 import { EventsByDayChart } from "./EventsByDayChart";
@@ -15,6 +17,8 @@ export function DashboardPage() {
   const { t } = useTranslation();
   const [period, setPeriod] = usePeriodParam();
   const query = useDashboardQuery(period);
+  // Checked across all time, so an empty period alone doesn't suggest a reinstall.
+  const hasCapturedEvents = useHasCapturedEvents();
 
   return (
     <>
@@ -25,6 +29,8 @@ export function DashboardPage() {
       />
 
       <div className="flex flex-col gap-4">
+        {hasCapturedEvents.data === false && <ConnectExtensionCard />}
+
         <RibbonHeader
           stats={query.data}
           period={period}

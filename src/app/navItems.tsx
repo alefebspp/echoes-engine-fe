@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 export interface NavItem {
   to: string;
   /** Key under `nav.*` holding the label and description. */
-  key: "dashboard" | "ask" | "activity" | "profile";
+  key: "dashboard" | "ask" | "activity" | "extension" | "profile";
   icon: ReactNode;
   end?: boolean;
 }
@@ -47,6 +47,15 @@ export const navItems: NavItem[] = [
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" {...stroke}>
         <path d="M2 9h3l2-5 2 11 2-7 1.5 3H16" />
+      </svg>
+    ),
+  },
+  {
+    to: "/app/extension",
+    key: "extension",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" {...stroke}>
+        <path d="M7 3.5a1.5 1.5 0 0 1 3 0V5h3a1 1 0 0 1 1 1v3h-1.5a1.5 1.5 0 0 0 0 3H14v2.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V12h1.5a1.5 1.5 0 0 0 0-3H3V6a1 1 0 0 1 1-1h3z" />
       </svg>
     ),
   },
