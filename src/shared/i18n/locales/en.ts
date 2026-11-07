@@ -45,6 +45,7 @@ export const en = {
     ask: { label: "Ask", description: "One question over your pages" },
     activity: { label: "Activity", description: "Rhythm and domains" },
     profile: { label: "Profile", description: "Your account" },
+    extension: { label: "Extension", description: "Capture your browsing" },
   },
   brand: {
     home: "Echoes Engine home",
@@ -116,9 +117,10 @@ export const en = {
       title: "What it records today",
       lead: "This is an evolving learning project. Here's exactly what works right now.",
       live: "Live",
+      earlyAccess: "Early access",
       visits: {
-        label: "Browser visit events",
-        body: "The backend captures WEB_VISIT events today — URL, title, browser, and time.",
+        label: "Chrome extension",
+        body: "A browser extension captures each visit — URL, title, browser, and time. While in early access it's installed by hand in developer mode.",
       },
       analytics: {
         label: "Period analytics",
@@ -291,6 +293,62 @@ export const en = {
     DUPLICATE_EXTERNAL_EVENT: "This event was already recorded.",
     UNABLE_TO_STORE_EVENT: "The event couldn't be saved. Try again in a moment.",
     INVALID_CURSOR: "This page link is no longer valid. Reload and try again.",
+  },
+  extension: {
+    eyebrow: "Browser extension · early access",
+    title: "Connect your browser",
+    description:
+      "Echoes learns from the pages you visit through a small Chrome extension. It isn't on the Chrome Web Store yet, so you install it by hand — it takes a couple of minutes.",
+    download: "Download the extension",
+    downloadHint: "A .zip with the latest version",
+    stepsTitle: "Install it in developer mode",
+    stepsSubtitle: "Chrome, Edge, Brave, and other Chromium browsers",
+    steps: {
+      unzip: {
+        title: "Unzip the download",
+        body: "Keep the echoes-extension folder somewhere permanent. The browser loads the extension from it, so deleting the folder removes the extension.",
+      },
+      open: {
+        title: "Open the extensions page",
+        body: "Paste this address into a new tab. Browsers don't let websites link to it directly.",
+      },
+      devMode: {
+        title: "Turn on Developer mode",
+        body: "Use the switch in the top-right corner of the extensions page.",
+      },
+      load: {
+        title: "Load the folder",
+        body: "Click “Load unpacked” and select the echoes-extension folder.",
+      },
+      signIn: {
+        title: "Sign in from the extension",
+        body: "Click the Echoes icon in the toolbar, give consent, turn tracking on, and sign in with this account.",
+      },
+    },
+    copy: "Copy",
+    copied: "Copied",
+    copyLabel: "Copy chrome://extensions",
+    afterInstall: "Once it's running, your visits start appearing on the dashboard shortly.",
+    notesTitle: "Good to know",
+    notes: {
+      warning:
+        "The browser may warn about extensions in developer mode. That's expected while Echoes is unpublished.",
+      updates:
+        "Updates are manual: download the new zip, replace the folder's contents, then click the reload icon on the extension's card.",
+      browsers: "Firefox and Safari aren't supported yet.",
+    },
+    privacyTitle: "What it captures",
+    privacy: {
+      captures: "Only the page address, its title, your browser, and the time of the visit.",
+      never: "Never page content, form fields, cookies, or passwords.",
+      control: "You can pause tracking at any time from the extension's settings.",
+    },
+    connect: {
+      eyebrow: "Nothing captured yet",
+      title: "Connect the browser extension",
+      body: "Echoes needs its Chrome extension to record the pages you visit. Install it to start filling this dashboard.",
+      cta: "Set up the extension",
+    },
   },
   ask: {
     eyebrow: "Ask",

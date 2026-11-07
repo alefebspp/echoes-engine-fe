@@ -93,7 +93,7 @@ export function LandingPage() {
             <div key={item} className="panel flex flex-col gap-2 p-5">
               <span className="inline-flex w-fit items-center gap-1.5 rounded-pill border border-signal/40 px-2 py-0.5 font-mono text-micro uppercase tracking-[0.1em] text-signal">
                 <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
-                {t("landing.capture.live")}
+                {item === "visits" ? t("landing.capture.earlyAccess") : t("landing.capture.live")}
               </span>
               <h3 className="text-h3 font-semibold">{t(`landing.capture.${item}.label`)}</h3>
               <p className="text-sm text-ink_text-muted">{t(`landing.capture.${item}.body`)}</p>

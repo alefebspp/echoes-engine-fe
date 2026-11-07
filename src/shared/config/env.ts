@@ -3,6 +3,8 @@
  * means the rest of the app never reads `import.meta.env` directly.
  */
 const DEFAULT_API_BASE_URL = "/api/v1";
+const DEFAULT_EXTENSION_DOWNLOAD_URL =
+  "https://github.com/alefebspp/echoes-browser-extension/releases/latest/download/echoes-extension.zip";
 
 function readApiBaseUrl(): string {
   const raw = import.meta.env.VITE_API_BASE_URL?.trim();
@@ -13,4 +15,7 @@ function readApiBaseUrl(): string {
 
 export const env = {
   apiBaseUrl: readApiBaseUrl(),
+  /** The latest browser extension build, installed manually while unpublished. */
+  extensionDownloadUrl:
+    import.meta.env.VITE_EXTENSION_DOWNLOAD_URL?.trim() || DEFAULT_EXTENSION_DOWNLOAD_URL,
 } as const;
